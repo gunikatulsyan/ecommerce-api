@@ -1,0 +1,26 @@
+{
+  "name": "ecommerce-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/app.ts",
+    "migrate": "npx prisma migrate dev --schema=src/prisma/schema.prisma"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gunikatulsyan/ecommerce-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gunikatulsyan/ecommerce-api/issues"
+  },
+  "homepage": "https://github.com/gunikatulsyan/ecommerce-api#readme",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "express": "^5.1.0",
+    "prisma": "^6.9.0"
+  }
+}
