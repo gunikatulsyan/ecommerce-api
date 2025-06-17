@@ -49,12 +49,13 @@ model User {
 //     updatedAt DateTime @updatedAt
 // }
 
-// model Brand {
-//     id          String    @id @unique @default(uuid())
-//     name        String
-//     description String
-//     is_active   Boolean   @default(false)
-//     createdAt   DateTime  @default(now())
-//     updatedAt   DateTime  @updatedAt
-//     Product     Product[]
-// }
+model Brand {
+    id          String   @id @unique @default(uuid())
+    name        String
+    description String
+    is_active   Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    image       String
+    // Product     Product[]
+}
