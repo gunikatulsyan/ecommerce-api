@@ -20,42 +20,45 @@ enum Role {
 }
 
 model User {
-    id               String   @id @unique @default(uuid())
+    id               String    @id @unique @default(uuid())
     name             String
     address          String
     phone_code       String
-    phone            String   @unique
-    email            String   @unique
+    phone            String    @unique
+    email            String    @unique
     role             Role
     account_password String
     numverified      Boolean
     emailverified    Boolean
-    status           Status   @default(pending)
+    status           Status    @default(pending)
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime  @updatedAt
+    Product          Product[]
+}
+
+model Product {
+    id               String   @id @unique @default(uuid())
+    name             String
+    price            Float
+    discountedPrice Float
+    image            String
+    color            String
+    quantity         Int
+    brandId          String?
+    brand            Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+    userId           String
+    user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     createdAt        DateTime @default(now())
     updatedAt        DateTime @updatedAt
 }
 
-// model Product {
-//     id        String   @id @unique @default(uuid())
-//     name      String
-//     price     Int
-//     image     String
-//     color     String
-//     quantity  Int
-//     category  String
-//     brandId   String?
-//     brand     Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
-//     createdAt DateTime @default(now())
-//     updatedAt DateTime @updatedAt
-// }
-
 model Brand {
-    id          String   @id @unique @default(uuid())
+    id          String    @id @unique @default(uuid())
     name        String
     description String
-    is_active   Boolean  @default(false)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    is_active   Boolean   @default(false)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
     image       String
-    // Product     Product[]
+    Product     Product[]
 }

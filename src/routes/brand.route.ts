@@ -7,7 +7,7 @@ import {
   updateBrand,
 } from "../controllers/brand.controller";
 import { authentication, authorization } from "../middleware/auth.middle";
-import { upload } from "../middleware/multter";
+import { upload } from "../middleware/multer";
 
 const router = Router();
 
@@ -19,7 +19,6 @@ router.post(
   authorization("admin"),
   upload.single("image"),
   createNewBrand
-
 );
 router.patch("/:id", authentication, authorization("admin"), updateBrand);
 router.delete("/:id", authentication, authorization("admin"), deleteBrand);

@@ -13,7 +13,7 @@ const router = Router();
 
 router.get("/",authentication, getAllUsers);
 router.get("/:id",authentication, getSingleUser);
-router.post("/",authentication, authorization("admin"), createNewUser);
+router.post("/", createNewUser);
 router.patch("/",authentication, authorization("admin"), updateUser);
 router.delete("/:id",authentication, authorization("admin"), deleteUser);
 

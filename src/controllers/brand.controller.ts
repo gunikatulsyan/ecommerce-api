@@ -1,9 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../utils/prismaClient";
-import bcrypt from "bcryptjs";
 import Joi from "joi";
-import { error } from "console";
-import path from "path";
 
 export const getAllBrands = async (req: any, res: any) => {
   const { limit, page, name, is_active } = req.query;
@@ -25,6 +22,7 @@ export const getAllBrands = async (req: any, res: any) => {
     take: currentLimit,
     skip: (currentPage - 1) * currentLimit,
   });
+
   const totalCount = await prisma.brand.count();
   return res
     .status(200)
@@ -33,8 +31,10 @@ export const getAllBrands = async (req: any, res: any) => {
 
 export const getSingleBrand = async (req: any, res: any) => {
   const { id } = req.params;
-  const brand = await prisma.user.findUnique({ where: { id } });
+
+  const brand = await prisma.brand.findUnique({ where: { id } });
   if (!brand) return res.status(400).json({ msg: "Brand not found" });
+
   return res.status(200).json({ msg: "Brand fetched successfully", brand });
 };
 
@@ -54,7 +54,7 @@ export const createNewBrand = async (req: any, res: any) => {
     name,
     is_active: Boolean(is_active),
     description,
-    image
+    image,
   };
 
   const brand = await prisma.brand.create({
@@ -65,7 +65,6 @@ export const createNewBrand = async (req: any, res: any) => {
 
 export const updateBrand = async (req: any, res: any) => {
   const { id } = req.params;
-  
 
   const { is_active } = req.body;
 
@@ -80,7 +79,7 @@ export const updateBrand = async (req: any, res: any) => {
   };
 
   const brand = await prisma.brand.update({
-      where: {id},
+    where: { id },
     data: updateBrandData,
   });
   return res.status(200).json({ msg: " Brand updated successfully", brand });
@@ -88,11 +87,14 @@ export const updateBrand = async (req: any, res: any) => {
 
 export const deleteBrand = async (req: any, res: any) => {
   const { id } = req.params;
+
   const brand = await prisma.brand.findUnique({ where: { id } });
   if (!brand) return res.status(400).json({ msg: "Brand not found" });
+
   await prisma.brand.delete({ where: { id } });
   return res.status(200).json({ msg: "Brand deleted successfully", brand });
 };
+
 const brandDataValidation = (data: any) => {
   const schema = Joi.object({
     name: Joi.string().required(),
