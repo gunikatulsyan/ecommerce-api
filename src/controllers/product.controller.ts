@@ -43,13 +43,20 @@ export const getAllProducts = async (req: any, res: any) => {
     filterQuery = { ...filterQuery, quantity: Number(quantity) };
   }
 
-  if (search){
-    filterQuery = { ...filterQuery, OR:[ {name: {contains:search}}, {color: { contains:search}}]}
+  if (search) {
+    filterQuery = {
+      ...filterQuery,
+      OR: [
+        { name: { contains: search } },
+        { color: { contains: search } },
+        { brand: { name: { contains: search } } },
+      ],
+    };
   }
 
   const products = await prisma.product.findMany({
     where: filterQuery,
-    include: { brand: true , user:true},
+    include: { brand: true, user: true },
     take: currentLimit,
     skip: (currentpage - 1) * currentLimit,
   });
@@ -61,8 +68,10 @@ export const getAllProducts = async (req: any, res: any) => {
 
 export const getSingleProduct = async (req: any, res: any) => {
   const { id } = req.params;
+
   const productexist = await prisma.user.findUnique({ where: { id } });
   if (!productexist) return res.status(400).json({ msg: "product not found" });
+  
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product)
     return res
