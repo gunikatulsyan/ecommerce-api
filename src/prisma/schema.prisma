@@ -34,22 +34,24 @@ model User {
     createdAt        DateTime  @default(now())
     updatedAt        DateTime  @updatedAt
     Product          Product[]
+    Cart             Cart[]
 }
 
 model Product {
-    id               String   @id @unique @default(uuid())
-    name             String
-    price            Float
+    id              String   @id @unique @default(uuid())
+    name            String
+    price           Float
     discountedPrice Float
-    image            String
-    color            String
-    quantity         Int
-    brandId          String?
-    brand            Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
-    userId           String
-    user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt        DateTime @default(now())
-    updatedAt        DateTime @updatedAt
+    image           String
+    color           String
+    quantity        Int
+    brandId         String?
+    brand           Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+    userId          String
+    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    Cart            Cart[]
 }
 
 model Brand {
@@ -61,4 +63,15 @@ model Brand {
     updatedAt   DateTime  @updatedAt
     image       String
     Product     Product[]
+}
+
+model Cart {
+    id        String   @id @unique @default(uuid())
+    quantity  Int
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    productId String
+    product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
