@@ -5,7 +5,6 @@ import Joi from "joi";
 export const getAllBrands = async (req: any, res: any) => {
   try {
     const { limit, page, name, is_active } = req.query;
-    console.log("hello");
     const currentPage = parseInt(page as string) || 1;
     const currentLimit = parseInt(limit as string) || 10;
 

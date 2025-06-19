@@ -75,3 +75,19 @@ model Cart {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
+
+enum Discount_type {
+    percentage
+    amount
+}
+
+model Coupon {
+    id             String        @id @unique @default(uuid())
+    code           String
+    is_active      Boolean
+    expire_after   DateTime
+    discount_type  Discount_type
+    discount_value Int
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+}
