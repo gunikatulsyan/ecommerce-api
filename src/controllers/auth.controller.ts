@@ -6,6 +6,7 @@ import "dotenv/config";
 const PRIVATE_KEY = process.env.SECRET_KEY || "ecommerce";
 
 export const login = async (req: any, res: any) => {
+  try{
   const { email, password } = req.body;
 
   const user = await prisma.user.findFirst({ where: { email } });
@@ -16,4 +17,8 @@ export const login = async (req: any, res: any) => {
 
   const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "1hr" });
   return res.status(200).json({ msg: "Login Sucessfull!", token, user });
+  }catch (error){
+    console.error(error);
+    res.status(500).json({ error });
+  }
 };

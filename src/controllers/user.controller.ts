@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import Joi from "joi";
 
 export const getAllUsers = async (req: any, res: any) => {
+  try{
   const { limit, page, name, role, status, address, email } = req.query;
   const currentPage = parseInt(page as string) || 1;
   const currentLimit = parseInt(limit as string) || 10;
@@ -36,16 +37,26 @@ export const getAllUsers = async (req: any, res: any) => {
   return res
     .status(200)
     .json({ msg: "User fetched successfully", users, totalCount });
+  } catch(error){
+    console.error(error);
+    res.status(500).json({ error });
+}
 };
 
 export const getSingleUser = async (req: any, res: any) => {
+  try{
   const { id } = req.params;
   const user = await prisma.user.findUnique({ where: { id } });
   if (!user) return res.status(400).json({ msg: "User not found" });
   return res.status(200).json({ msg: "User fetched successfully", user });
+} catch(error){
+  console.error(error);
+  res.status(500).json({ error });
+}
 };
 
 export const createNewUser = async (req: any, res: any) => {
+  try{
   const { name, email, phone, phone_code, address, password, role } = req.body;
 
   const { error } = userDataValidation(req.body);
@@ -76,9 +87,14 @@ export const createNewUser = async (req: any, res: any) => {
     data: createUserData,
   });
   return res.status(200).json({ msg: "User created successfully", user });
+} catch(error){
+  console.error(error);
+  res.status(500).json({ error });
+}
 };
 
 export const updateUser = async (req: any, res: any) => {
+  try{
   const { id } = req.query;
 
   const { name, role, status, address } = req.body;
@@ -96,9 +112,14 @@ export const updateUser = async (req: any, res: any) => {
     where: { id },
   });
   return res.status(200).json({ msg: "User updated successfully", user });
+} catch(error){
+  console.error(error);
+  res.status(500).json({ error });
+}
 };
 
 export const deleteUser = async (req: any, res: any) => {
+  try{
   const { id } = req.params;
 
   const user = await prisma.user.findUnique({ where: { id } });
@@ -106,6 +127,10 @@ export const deleteUser = async (req: any, res: any) => {
 
   await prisma.user.delete({ where: { id } });
   return res.status(200).json({ msg: "User deleted successfully", user });
+} catch(error){
+  console.error(error);
+  res.status(500).json({ error });
+}
 };
 
 const userDataValidation = (data: any) => {

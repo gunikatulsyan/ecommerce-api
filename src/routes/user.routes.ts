@@ -11,7 +11,7 @@ import { authentication, authorization } from "../middleware/auth.middle";
 
 const router = Router();
 
-router.get("/",authentication, getAllUsers);
+router.get("/", getAllUsers);
 router.get("/:id",authentication, getSingleUser);
 router.post("/", createNewUser);
 router.patch("/",authentication, authorization("admin"), updateUser);

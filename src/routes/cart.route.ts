@@ -1,20 +1,17 @@
 import { Router } from "express";
-import { createNewCart, deleteCart, getAllCart, getSingleCart, updateCart } from "../controllers/cart.controller";
+import {
+  addToCart,
+  deleteCart,
+  getAllCart,
+  getSingleCart,
+} from "../controllers/cart.controller";
 import { authentication, authorization } from "../middleware/auth.middle";
-
 
 const router = Router();
 
-router.get("/", authentication, getAllCart);
-router.get("/:id", authentication, getSingleCart);
-router.post(
-  "/",
-  authentication,
-  authorization("admin"),
-  createNewCart
-
-);
-router.patch("/:id", authentication, authorization("admin"), updateCart);
-router.delete("/:id", authentication, authorization("admin"), deleteCart);
+router.get("/", authentication, authorization("buyer"), getAllCart);
+router.get("/:id", authentication, authorization("buyer"), getSingleCart);
+router.post("/", authentication, authorization("buyer"), addToCart);
+router.delete("/:id", authentication, authorization("buyer"), deleteCart);
 
 export default router;

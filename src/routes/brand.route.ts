@@ -11,7 +11,7 @@ import { upload } from "../middleware/multer";
 
 const router = Router();
 
-router.get("/", authentication, getAllBrands);
+router.get("/", getAllBrands);
 router.get("/:id", authentication, getSingleBrand);
 router.post(
   "/",
