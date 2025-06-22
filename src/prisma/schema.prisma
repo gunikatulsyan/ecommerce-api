@@ -82,12 +82,13 @@ enum Discount_type {
 }
 
 model Coupon {
-    id             String        @id @unique @default(uuid())
-    code           String
-    is_active      Boolean
-    expire_after   DateTime
-    discount_type  Discount_type
-    discount_value Int
-    createdAt      DateTime      @default(now())
-    updatedAt      DateTime      @updatedAt
+    id              String        @id @unique @default(uuid())
+    code            String
+    is_active       Boolean
+    expire_after    DateTime
+    discount_type   Discount_type
+    discount_value  Float
+    discount_amount Float?
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
 }

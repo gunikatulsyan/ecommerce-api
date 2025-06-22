@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Discount_type, Prisma } from "@prisma/client";
 import prisma from "../utils/prismaClient";
 import Joi from "joi";
 import moment from 'moment';
@@ -81,7 +81,7 @@ export const getSingleCoupon = async (req: any, res: any) => {
 
 export const createNewCoupon = async (req: any, res: any) => {
   try {
-    let { code, is_active, expire_after, discount_type, discount_value } =
+    let { code, is_active, expire_after, discount_type, discount_value, discount_amount } =
       req.body;
 
     const { error } = CouponDataValidation(req.body);
@@ -99,6 +99,7 @@ export const createNewCoupon = async (req: any, res: any) => {
       expire_after: expiredDate,
       discount_type,
       discount_value,
+      discount_amount
     };
 
     const coupon = await prisma.coupon.create({
@@ -160,12 +161,58 @@ export const deleteCoupon = async (req: any, res: any) => {
   }
 };
 
+export const applyCoupon = async (req:any, res:any) =>
+{
+  try{
+    const { code, cart_id} =  req.body;
+
+    const coupon = await prisma.coupon.findFirst({where: { code }});
+    if(!coupon) return res.status(404).json({msg: "Invalid Coupon"});
+    if(!coupon.is_active) return res.status(400).json({msg: " Coupon is not actie"});
+    if(moment().isAfter(moment(coupon.expire_after))){
+      return res.status(400).json({msg:"Coupon has expired"});
+    }
+
+    const cartItems = await prisma.cart.findUnique({ 
+      where: { id: cart_id },
+      include: { product: true },
+    });
+    
+    if (!cartItems) {
+      return res.status(404).json({ msg: "Cart item not found" });
+    }
+
+    const totalPrice = cartItems.quantity * cartItems.product.price;
+
+    let discount = 0;
+    if(coupon.discount_type===Discount_type.percentage){
+      discount = (coupon.discount_value/100)*totalPrice;
+      if (coupon.discount_amount && discount > coupon.discount_amount ){
+        discount=coupon.discount_amount
+      };
+    } else if (coupon.discount_type===Discount_type.amount){
+      discount = coupon.discount_value;
+    }
+
+    if(discount>totalPrice) discount = totalPrice;
+    const finalAmount = totalPrice -discount;
+
+    return res.status(200).json({ msg:" Coupon Applied successfuly", data:{finalAmount, discount, totalPrice}});
+
+  }catch (error){
+    console.error(error);
+    res.status(500).json({error});
+  }
+}
+
 const CouponDataValidation = (data: any) => {
   const schema = Joi.object({
     code: Joi.string().required(),
+    expire_after:Joi.number().required(),
     is_active: Joi.boolean().required(),
-    discount_type: Joi.string().required().valid("percet", "amount"),
+    discount_type: Joi.string().required().valid("percentage", "amount"),
     discount_value: Joi.number().required(),
+    discount_amount: Joi.number()
   }).options({ allowUnknown: true });
   return schema.validate(data);
 };

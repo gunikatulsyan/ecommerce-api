@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import prisma from "../utils/prismaClient";
 import bcrypt from "bcryptjs";
 import Joi from "joi";
+import { sendMail } from "../utils/mail";
 
 export const getAllUsers = async (req: any, res: any) => {
   try{
@@ -86,6 +87,8 @@ export const createNewUser = async (req: any, res: any) => {
   const user = await prisma.user.create({
     data: createUserData,
   });
+
+  sendMail(user.email, user.name)
   return res.status(200).json({ msg: "User created successfully", user });
 } catch(error){
   console.error(error);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createNewCoupon, deleteCoupon, getAllCoupon, getSingleCoupon, updateCoupon } from "../controllers/coupon.controller";
+import { applyCoupon, createNewCoupon, deleteCoupon, getAllCoupon, getSingleCoupon, updateCoupon } from "../controllers/coupon.controller";
 
 const router = Router();
 
@@ -8,4 +8,5 @@ router.get("/:id", getSingleCoupon)
 router.post("/", createNewCoupon)
 router.patch("/:id",updateCoupon)
 router.delete("/:id", deleteCoupon)
+router.post("/apply", applyCoupon)
 export default router;
