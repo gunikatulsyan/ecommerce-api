@@ -9,7 +9,7 @@ router.get("/:id", authentication, getSingleProduct);
 router.post(
   "/",
   authentication,
-  authorization("admin"),
+  authorization("seller"),
   upload.single("image"),
   createNewProduct
 

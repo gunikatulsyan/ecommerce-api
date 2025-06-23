@@ -35,10 +35,11 @@ model User {
     updatedAt        DateTime  @updatedAt
     Product          Product[]
     Cart             Cart[]
+    Order            Order[]
 }
 
 model Product {
-    id              String   @id @unique @default(uuid())
+    id              String      @id @unique @default(uuid())
     name            String
     price           Float
     discountedPrice Float
@@ -46,12 +47,13 @@ model Product {
     color           String
     quantity        Int
     brandId         String?
-    brand           Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+    brand           Brand?      @relation(fields: [brandId], references: [id], onDelete: SetNull)
     userId          String
-    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
+    user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
     Cart            Cart[]
+    OrderItem       OrderItem[]
 }
 
 model Brand {
@@ -77,8 +79,8 @@ model Cart {
 }
 
 enum Discount_type {
-    percentage
-    amount
+    Percentage
+    Amount
 }
 
 model Coupon {
@@ -91,4 +93,40 @@ model Coupon {
     discount_amount Float?
     createdAt       DateTime      @default(now())
     updatedAt       DateTime      @updatedAt
+}
+
+enum OrderStatus {
+    pending
+    processing
+    shipped
+    delivered
+    cancelled
+}
+
+model Order {
+    id              String      @id @default(uuid())
+    status          OrderStatus @default(pending)
+    paymentMode     String
+    shippingAddress String
+    totalPrice      Float
+    totalDiscount   Float
+    userId          String
+    user            User        @relation(fields: [userId], references: [id])
+    userData        Json
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
+
+    orderItems OrderItem[]
+}
+
+model OrderItem {
+    id          String  @id @default(uuid())
+    orderId     String
+    price       Float
+    quantity    Int
+    productId   String
+    product     Product @relation(fields: [productId], references: [id])
+    productData Json
+
+    order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }

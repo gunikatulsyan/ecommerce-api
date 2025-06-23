@@ -75,14 +75,11 @@ export const getSingleProduct = async (req: any, res: any) => {
 try{
   const { id } = req.params;
 
-  const productexist = await prisma.user.findUnique({ where: { id } });
+  const productexist = await prisma.product.findUnique({ where: { id } });
   if (!productexist) return res.status(400).json({ msg: "product not found" });
 
   const product = await prisma.product.findUnique({ where: { id } });
-  if (!product)
-    return res
-      .status(200)
-      .json({ msg: "Product fetched successfully", product });
+  return res.status(200).json({ msg: "Product fetched successfully", product });
 } catch(error){
     console.error(error);
     res.status(500).json({ error });

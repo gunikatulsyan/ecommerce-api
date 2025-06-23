@@ -4,7 +4,7 @@ CREATE TABLE `Coupon` (
     `code` VARCHAR(191) NOT NULL,
     `is_active` BOOLEAN NOT NULL,
     `expire_after` DATETIME(3) NOT NULL,
-    `discount_type` ENUM('percentage', 'amount') NOT NULL,
+    `discount_type` ENUM('Percentage', 'amount') NOT NULL,
     `discount_value` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
