@@ -79,6 +79,8 @@ export const createNewOrder = async (req: any, res: any) => {
     if (!user) return res.status(400).json({ msg: "user not found" });
 
     let totalPrice = 0;
+
+    let orderItemsData = [];
     for (const item of orderItems) {
       const product = await prisma.product.findUnique({
         where: { id: item.productId },
@@ -86,7 +88,12 @@ export const createNewOrder = async (req: any, res: any) => {
       if (!product) {
         return res.status(400).json({ msg: `Product not found` });
       }
-      item.product = product;
+      orderItemsData.push({
+        price: product.price,
+        quantity: item.quantity,
+        productId: item.productId,
+        productData: product,
+      });
       totalPrice += product.price * item.quantity;
     }
 
@@ -96,15 +103,7 @@ export const createNewOrder = async (req: any, res: any) => {
       shippingAddress,
       totalPrice,
       user: { connect: { id: user.id } },
-      orderItems: {
-        create: orderItems.map((item: any) => ({
-          price: item.price,
-          quantity: item.quantity,
-          product: {
-            connect: { id: item.productId },
-          },
-        })),
-      },
+      orderItems: { createMany: { data: orderItemsData } },
       userData: user,
       totalDiscount: 0,
     };
