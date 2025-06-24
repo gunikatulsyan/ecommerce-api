@@ -16,11 +16,21 @@ router.get("/:id", authentication, getSingleBrand);
 router.post(
   "/",
   authentication,
-  authorization("admin"),
+  authorization("admin", "buyer", "seller"),
   upload.single("image"),
   createNewBrand
 );
-router.patch("/:id", authentication, authorization("admin"), updateBrand);
-router.delete("/:id", authentication, authorization("admin"), deleteBrand);
+router.patch(
+  "/:id",
+  authentication,
+  authorization(["admin", "buyer", "seller"]),
+  updateBrand
+);
+router.delete(
+  "/:id",
+  authentication,
+  authorization("admin", "buyer", "seller"),
+  deleteBrand
+);
 
 export default router;

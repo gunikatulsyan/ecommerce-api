@@ -20,10 +20,16 @@ export const getAllOrders = async (req: any, res: any) => {
     }
 
     if (search) {
-      filterQuery.shippingAddress = {
+        filterQuery.shippingAddress = {
         contains: search,
       };
     }
+
+    if (req.query.userId) {
+        filterQuery.user = {
+        id: req.query.userId as string,
+  };
+}
 
     const orders = await prisma.order.findMany({
       where: filterQuery,
@@ -88,6 +94,13 @@ export const createNewOrder = async (req: any, res: any) => {
       if (!product) {
         return res.status(400).json({ msg: `Product not found` });
       }
+
+    if (product.quantity < item.quantity) {
+    return res.status(400).json({ msg: `Not enough stock` });
+  }
+
+  await prisma.product.update ({where:{id:item.productId}, data:{ quantity:{decrement:item.quantity}}})
+
       orderItemsData.push({
         price: product.price,
         quantity: item.quantity,
@@ -120,6 +133,8 @@ export const createNewOrder = async (req: any, res: any) => {
   }
 };
 
+
+
 const OrderDataValidation = (data: any) => {
   const schema = Joi.object({
     status: Joi.string().valid(
@@ -142,4 +157,35 @@ const OrderDataValidation = (data: any) => {
   }).options({ allowUnknown: true });
 
   return schema.validate(data);
+};
+
+
+export const updateOrderStatus = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) return res.status(400).json({ msg: "Status is required" });
+
+    const order = await prisma.order.findUnique({ where: { id } });
+    if (!order) return res.status(404).json({ msg: "Order not found" });
+
+    const userRole = req.user.role;
+    if (userRole !== "admin" && userRole !== "seller") {
+      return res.status(403).json({ msg: "Only admin or seller can update status" });
+    }
+
+    const updated = await prisma.order.update({
+      where: { id },
+      data: { status },
+    });
+
+    return res.status(200).json({
+      msg: `Order status updated '`,
+      order: updated,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
 };

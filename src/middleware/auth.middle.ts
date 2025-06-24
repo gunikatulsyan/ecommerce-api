@@ -12,14 +12,14 @@ export const authentication = (req: any, res: any, next: any) => {
     req.user = decode.user;
     next();
   } catch (error) {
-    res.status(400).json({ error: "Invalid Token" });
+    return res.status(400).json({ error: "Invalid Token" });
   }
 };
 
 export const authorization =
-  (role: any) => async (req: any, res: any, next: any) => {
+  (...role: any) => async (req: any, res: any, next: any) => {
     if (!role.includes(req.user.role)) {
-      res
+      return res
         .status(400)
         .json({ error: "You do not have permission to access this resources" });
     }

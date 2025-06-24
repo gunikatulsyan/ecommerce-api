@@ -9,9 +9,9 @@ import { authentication, authorization } from "../middleware/auth.middle";
 
 const router = Router();
 
-router.get("/", authentication, authorization("buyer"), getAllCart);
-router.get("/:id", authentication, authorization("buyer"), getSingleCart);
-router.post("/", authentication, authorization("buyer"), addToCart);
-router.delete("/:id", authentication, authorization("buyer"), deleteCart);
+router.get("/", authentication, authorization("admin", "buyer", "seller"), getAllCart);
+router.get("/:id", authentication, authorization("admin", "buyer", "seller"), getSingleCart);
+router.post("/", authentication, authorization("admin", "buyer", "seller"), addToCart);
+router.delete("/:id", authentication, authorization("admin", "buyer", "seller"), deleteCart);
 
 export default router;

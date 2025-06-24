@@ -12,9 +12,19 @@ import { authentication, authorization } from "../middleware/auth.middle";
 const router = Router();
 
 router.get("/", getAllUsers);
-router.get("/:id",authentication, getSingleUser);
+router.get("/:id", authentication, getSingleUser);
 router.post("/", createNewUser);
-router.patch("/",authentication, authorization("admin"), updateUser);
-router.delete("/:id",authentication, authorization("admin"), deleteUser);
+router.patch(
+  "/:id",
+  authentication,
+  authorization("admin", "buyer", "seller"),
+  updateUser
+);
+router.delete(
+  "/:id",
+  authentication,
+  authorization("admin", "buyer", "seller"),
+  deleteUser
+);
 
 export default router;

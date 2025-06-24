@@ -9,12 +9,12 @@ router.get("/:id", authentication, getSingleProduct);
 router.post(
   "/",
   authentication,
-  authorization("seller"),
+  authorization("admin", "buyer", "seller"),
   upload.single("image"),
   createNewProduct
 
 );
-router.patch("/:id", authentication, authorization("admin"), updateProduct);
-router.delete("/:id", authentication, authorization("admin"), deleteProduct);
+router.patch("/:id", authentication, authorization("admin", "buyer", "seller"), updateProduct);
+router.delete("/:id", authentication, authorization("admin", "buyer", "seller"), deleteProduct);
 
 export default router;
