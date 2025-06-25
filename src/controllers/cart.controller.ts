@@ -33,7 +33,7 @@ export const getAllCart = async (req: any, res: any) => {
     const totalCount = await prisma.cart.count();
     return res
       .status(200)
-      .json({ msg: " cart fetched successfully", carts, totalCount });
+      .json({ msg: " cart fetched successfully", carts, totalCount, currentpage });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });

@@ -8,7 +8,7 @@ export const getAllUsers = async (req: any, res: any) => {
   try {
     const { limit, page, name, role, status, address, email } = req.query;
     const currentPage = parseInt(page as string) || 1;
-    const currentLimit = parseInt(limit as string) || 10;
+    const currentLimit = parseInt(limit as string) || 4;
 
     let filterQuery: Prisma.UserWhereInput = {};
 
@@ -37,7 +37,7 @@ export const getAllUsers = async (req: any, res: any) => {
     const totalCount = await prisma.user.count();
     return res
       .status(200)
-      .json({ msg: "User fetched successfully", users, totalCount });
+      .json({ msg: "User fetched successfully", users, totalCount, currentPage });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });

@@ -16,7 +16,7 @@ export const getAllProducts = async (req: any, res: any) => {
       search,
     } = req.query;
     const currentpage = parseInt(page as string) || 1;
-    const currentLimit = parseInt(limit as string) || 10;
+    const currentLimit = parseInt(limit as string) || 4;
 
     let filterQuery: Prisma.ProductWhereInput = {};
 
@@ -67,7 +67,7 @@ export const getAllProducts = async (req: any, res: any) => {
     const totalCount = await prisma.product.count();
     return res
       .status(200)
-      .json({ msg: " Product fetched successfully", products, totalCount });
+      .json({ msg: " Product fetched successfully", products, totalCount, currentpage });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });

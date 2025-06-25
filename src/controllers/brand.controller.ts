@@ -27,7 +27,7 @@ export const getAllBrands = async (req: any, res: any) => {
     const totalCount = await prisma.brand.count();
     return res
       .status(200)
-      .json({ msg: " Brand fetched successfully", brands, totalCount });
+      .json({ msg: " Brand fetched successfully", brands, totalCount, currentPage });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
@@ -82,7 +82,10 @@ export const updateBrand = async (req: any, res: any) => {
   try {
     const { id } = req.params;
 
-    const { is_active } = req.body;
+    
+    const { is_active,name, description } = req.body;
+
+    
 
     const brandexist = await prisma.brand.findUnique({ where: { id } });
     if (!brandexist) return res.status(400).json({ msg: "Brand not found" });
@@ -92,6 +95,8 @@ export const updateBrand = async (req: any, res: any) => {
 
     let updateBrandData: Prisma.BrandUpdateInput = {
       is_active,
+      name,
+      description
     };
 
     const brand = await prisma.brand.update({

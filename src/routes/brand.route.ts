@@ -20,10 +20,10 @@ router.post(
   upload.single("image"),
   createNewBrand
 );
-router.patch(
+router.put(
   "/:id",
   authentication,
-  authorization(["admin", "buyer", "seller"]),
+  authorization("admin", "buyer", "seller"),
   updateBrand
 );
 router.delete(
